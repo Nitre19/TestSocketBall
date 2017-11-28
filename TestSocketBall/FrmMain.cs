@@ -97,7 +97,7 @@ namespace TestSocketBall
         private void LoSocket_msgReceived(object sender, EventArgs e)
         {
             //Obtenems la pelota del vecino
-            datosPelota = (String) sender;
+            datosPelota = (String)sender;
 
             Ball pelota = JsonConvert.DeserializeObject<Ball>(datosPelota);
             ClBall pelotaui = new ClBall(Color.FromArgb(pelota.color), pelota.creator, pelota.movementX,
