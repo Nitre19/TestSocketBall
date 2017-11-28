@@ -25,7 +25,7 @@ namespace TestSocketBall
         public String ipLocal = "";
 
         //Vecinos
-        public String ipLeft =  "192.168.3.30";
+        public String ipLeft =  "192.168.3.36";
         public String ipRight = "192.168.3.35";
 
         //Guarda el JSon de la pelota
@@ -97,7 +97,8 @@ namespace TestSocketBall
         private void LoSocket_msgReceived(object sender, EventArgs e)
         {
             //Obtenems la pelota del vecino
-            datosPelota = (String) sender;
+            ClSockets temp = (ClSockets) sender;
+            datosPelota = temp.data;
 
             Ball pelota = JsonConvert.DeserializeObject<Ball>(datosPelota);
             ClBall pelotaui = new ClBall(Color.FromArgb(pelota.color), pelota.creator, pelota.movementX,
