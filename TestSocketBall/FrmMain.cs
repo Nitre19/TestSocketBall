@@ -121,10 +121,25 @@ namespace TestSocketBall
         private void LoBall_wallhit(object sender, EventArgs e)
         {
             ClBall loBall = (ClBall) sender;
+            Ball ball;
 
             //Miramos si hay paredes en la partida
             if (!wallsExist)
             {
+                ball = new Ball
+                {
+                    color = loBall.Color.ToArgb(),
+                    diameter = loBall.Diametre,
+                    creator = loBall.Owner,
+                    life = loBall.Life,
+                    movementX = loBall.MovX,
+                    movementY = loBall.MovY,
+                    positionX = loBall.PosX,
+                    positionY = loBall.PosY,
+                    resolutionY = loBall.ResY,
+                    resolutionX = loBall.ResX
+                };
+                datosPelota = JsonConvert.SerializeObject(ball);
                 //Segun la posicion X de la pelota sabemos si es left o right
                 if (loBall.PosX < this.Width / 2)
                 {
