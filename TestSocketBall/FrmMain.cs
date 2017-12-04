@@ -19,13 +19,13 @@ namespace TestSocketBall
     public partial class FrmMain : Form
     {
         //Name owner
-        public String ownerName = "Ruben";
+        public String ownerName = "Xavi";
 
         //Mi ip
         public String ipLocal = "";
 
         //Vecinos
-        public String ipLeft =  "192.168.3.41";
+        public String ipLeft =  "192.168.3.36";
         public String ipRight = "192.168.3.24";
 
         //Guarda el JSon de la pelota
@@ -106,7 +106,7 @@ namespace TestSocketBall
                 pelota.positionY = 0 + (pelota.positionX - 0) * (Screen.PrimaryScreen.Bounds.Height - 0) / (pelota.resolutionX - 0);
 
                 ClBall pelotaui = new ClBall(Color.FromArgb(pelota.color), pelota.creator, pelota.movementX,
-                pelota.movementY, pelota.diameter, this, 0, loPaddle, 500, pelota.positionY,
+                pelota.movementY, pelota.diameter, this, 30, loPaddle, 500, pelota.positionY,
                 pelota.resolutionX, pelota.resolutionY, pelota.life);
                 pelotaui.wallhit += LoBall_wallhit;
             });
