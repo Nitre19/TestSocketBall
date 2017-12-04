@@ -19,16 +19,14 @@ namespace TestSocketBall
     public partial class FrmMain : Form
     {
         //Name owner
-        public String ownerName = "Xavi";
+        public String ownerName = "Ruben";
 
         //Mi ip
         public String ipLocal = "";
 
         //Vecinos
-        public String ipLeft =  "192.168.3.25";
-
-        public String ipRight = "192.168.3.30";
-
+        public String ipLeft =  "192.168.3.30";
+        public String ipRight = "192.168.3.26";
 
         //Guarda el JSon de la pelota
         public String datosPelota = "";
@@ -105,7 +103,6 @@ namespace TestSocketBall
             Ball pelota = JsonConvert.DeserializeObject<Ball>(datosPelota);
             BeginInvoke((Action)delegate
             {
-
                 pelota.positionY = ConvertRange(0, pelota.resolutionY, 0, Screen.PrimaryScreen.Bounds.Height, pelota.positionY);
                 //pelota.positionY = 0 + (pelota.positionX - 0) * (Screen.PrimaryScreen.Bounds.Height - 0) / (pelota.resolutionX - 0);
 
@@ -131,55 +128,61 @@ namespace TestSocketBall
             if (e.Control && e.KeyCode == Keys.N)
             {
                 //Poner la pelota de la Marta
-                loBall = new ClBall(Color.FromArgb(255, random.Next(0, 256), random.Next(0, 256), random.Next(0, 256)), ownerName + DateTime.Now, 10, 10, 30, this, 30, loPaddle, 70, 70, Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, 1);
+                loBall = new ClBall(Color.FromArgb(255, random.Next(0, 256), random.Next(0, 256), random.Next(0, 256)), ownerName, 10, 10, 30, this, 30, loPaddle, 70, 70, Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, 1);
                 loBall.wallhit += LoBall_wallhit;
             }
         }
 
         private void LoBall_wallhit(object sender, EventArgs e)
         {
-            ClBall loBall = (ClBall) sender;
-            loBall.PararPelota();
-            Ball ball;
-
-            //Miramos si hay paredes en la partida
-            if (!wallsExist)
+            try
             {
-                ball = new Ball
-                {
-                    color = loBall.Color.ToArgb(),
-                    diameter = loBall.Diametre,
-                    creator = loBall.Owner,
-                    life = loBall.Life,
-                    movementX = loBall.DirectionX,
-                    movementY = loBall.DirectionY,
-                    positionX = loBall.PosX,
-                    positionY = loBall.PosY,
-                    resolutionY = loBall.ResY,
-                    resolutionX = loBall.ResX
-                };
+                ClBall loBall = (ClBall)sender;
+                Ball ball;
 
-                //Segun la posicion X de la pelota sabemos si es left o right
-                if (loBall.PosX < this.Width / 2)
+                //Miramos si hay paredes en la partida
+                if (!wallsExist)
                 {
-                    loBall.RemoveBall();
-                    loBall.Dispose();
-                    ball.positionX = this.Width - (ball.diameter + 5);
-                    datosPelota = JsonConvert.SerializeObject(ball);
-                    loSocket.sendDataLeft(datosPelota);
+                    loBall.PararPelota();
+
+                    ball = new Ball
+                    {
+                        color = loBall.Color.ToArgb(),
+                        diameter = loBall.Diametre,
+                        creator = loBall.Owner,
+                        life = loBall.Life,
+                        movementX = loBall.DirectionX,
+                        movementY = loBall.DirectionY,
+                        positionX = loBall.PosX,
+                        positionY = loBall.PosY,
+                        resolutionY = loBall.ResY,
+                        resolutionX = loBall.ResX
+                    };
+
+                    //Segun la posicion X de la pelota sabemos si es left o right
+                    if (loBall.PosX < this.Width / 2)
+                    {
+                        loBall.RemoveBall();
+                        loBall.Dispose();
+                        ball.positionX = this.Width - (ball.diameter + 5);
+                        datosPelota = JsonConvert.SerializeObject(ball);
+                        loSocket.sendDataLeft(datosPelota);
+                    }
+                    else
+                    {
+                        loBall.RemoveBall();
+                        loBall.Dispose();
+                        ball.positionX = 4;
+                        datosPelota = JsonConvert.SerializeObject(ball);
+                        loSocket.sendDataRight(datosPelota);
+                    }
+
                 }
-                else
-                {
-                    loBall.RemoveBall();
-                    loBall.Dispose();
-                    ball.positionX = 4;
-                    datosPelota = JsonConvert.SerializeObject(ball);
-                    loSocket.sendDataRight(datosPelota);
-                }
+            }
+            catch (Exception excp)
+            {
 
             }
-
-
         }
 
         private void FrmMain_MouseMove(object sender, MouseEventArgs e)
