@@ -105,7 +105,7 @@ namespace TestSocketBall
             {
                 pelota.positionY = 0 + (pelota.positionY - 0) * (Screen.PrimaryScreen.Bounds.Height - 0) / (pelota.resolutionY - 0);
 
-                ClBall pelotaui = new ClBall(Color.FromArgb(pelota.color), pelota.creator, pelota.movementX,
+                ClBall pelotaui = new ClBall(Color.FromArgb(pelota.color), pelota.creator, -pelota.movementX,
                 pelota.movementY, pelota.diameter, this, 30, loPaddle, pelota.positionX, pelota.positionY,
                 pelota.resolutionX, pelota.resolutionY, pelota.life);
                 pelotaui.wallhit += LoBall_wallhit;
