@@ -25,8 +25,8 @@ namespace TestSocketBall
         public String ipLocal = "";
 
         //Vecinos
-        public String ipLeft =  "192.168.3.41";
-        public String ipRight = "192.168.3.24";
+        public String ipLeft =  "192.168.3.24";
+        public String ipRight = "192.168.3.41";
 
         //Guarda el JSon de la pelota
         public String datosPelota = "";
@@ -106,7 +106,7 @@ namespace TestSocketBall
                 pelota.positionY = 0 + (pelota.positionX - 0) * (Screen.PrimaryScreen.Bounds.Height - 0) / (pelota.resolutionX - 0);
 
                 ClBall pelotaui = new ClBall(Color.FromArgb(pelota.color), pelota.creator, pelota.movementX,
-                pelota.movementY, pelota.diameter, this, 0, loPaddle, 500, pelota.positionY,
+                pelota.movementY, pelota.diameter, this, 30, loPaddle, pelota.positionX, pelota.positionY,
                 pelota.resolutionX, pelota.resolutionY, pelota.life);
                 pelotaui.wallhit += LoBall_wallhit;
             });
@@ -146,19 +146,24 @@ namespace TestSocketBall
                     resolutionY = loBall.ResY,
                     resolutionX = loBall.ResX
                 };
-                datosPelota = JsonConvert.SerializeObject(ball);
+
                 //Segun la posicion X de la pelota sabemos si es left o right
                 if (loBall.PosX < this.Width / 2)
                 {
+                    ball.positionX = this.Width - (ball.diameter / 2);
+                    datosPelota = JsonConvert.SerializeObject(ball);
                     loSocket.sendDataLeft(datosPelota);
                 }
                 else
                 {
+                    ball.positionX = 4;
+                    datosPelota = JsonConvert.SerializeObject(ball);
                     loSocket.sendDataRight(datosPelota);
                 }
+
             }
 
-            
+
         }
 
         private void FrmMain_MouseMove(object sender, MouseEventArgs e)
