@@ -25,8 +25,8 @@ namespace TestSocketBall
         public String ipLocal = "";
 
         //Vecinos
-        public String ipLeft =  "192.168.3.30";
-        public String ipRight = "192.168.3.35";
+        public String ipLeft =  "192.168.3.41";
+        public String ipRight = "192.168.3.24";
 
         //Guarda el JSon de la pelota
         public String datosPelota = "";
