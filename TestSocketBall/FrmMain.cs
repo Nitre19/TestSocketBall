@@ -103,7 +103,7 @@ namespace TestSocketBall
             Ball pelota = JsonConvert.DeserializeObject<Ball>(datosPelota);
             BeginInvoke((Action)delegate
             {
-                pelota.positionY = 0 + (pelota.positionY - 0) * (Screen.PrimaryScreen.Bounds.Height - 0) / (pelota.resolutionY - 0);
+                pelota.positionY = ConvertRange(0, pelota.resolutionY, 0, Screen.PrimaryScreen.Bounds.Height, pelota.positionY);
 
                 ClBall pelotaui = new ClBall(Color.FromArgb(pelota.color), pelota.creator, -pelota.movementX,
                 pelota.movementY, pelota.diameter, this, 30, loPaddle, pelota.positionX, pelota.positionY,
@@ -120,7 +120,7 @@ namespace TestSocketBall
             if (e.Control && e.KeyCode == Keys.N)
             {
                 //Poner la pelota de la Marta
-                loBall = new ClBall(Color.FromArgb(255, random.Next(0, 256), random.Next(0, 256), random.Next(0, 256)), ownerName, 10, 10, 30, this, 30, loPaddle, 70, 70, 50, 50, 1);
+                loBall = new ClBall(Color.FromArgb(255, random.Next(0, 256), random.Next(0, 256), random.Next(0, 256)), ownerName +DateTime.Now, 10, 10, 30, this, 30, loPaddle, 70, 70, Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, 1);
                 loBall.wallhit += LoBall_wallhit;
             }
         }
@@ -129,6 +129,8 @@ namespace TestSocketBall
         {
             ClBall loBall = (ClBall) sender;
             Ball ball;
+
+            loBall.PararPelota();
 
             //Miramos si hay paredes en la partida
             if (!wallsExist)
@@ -143,22 +145,26 @@ namespace TestSocketBall
                     movementY = loBall.DirectionY,
                     positionX = loBall.PosX,
                     positionY = loBall.PosY,
-                    resolutionY = loBall.ResY,
-                    resolutionX = loBall.ResX
+                    resolutionY = Screen.PrimaryScreen.Bounds.Height,
+                    resolutionX = Screen.PrimaryScreen.Bounds.Width
                 };
 
                 //Segun la posicion X de la pelota sabemos si es left o right
                 if (loBall.PosX < this.Width / 2)
                 {
-                    ball.positionX = this.Width - (ball.diameter / 2);
+                    ball.positionX = this.Width - (ball.diameter +5);
                     datosPelota = JsonConvert.SerializeObject(ball);
                     loSocket.sendDataLeft(datosPelota);
+                    loBall.RemoveBall();
+                    loBall.Dispose();
                 }
                 else
                 {
                     ball.positionX = 4;
                     datosPelota = JsonConvert.SerializeObject(ball);
                     loSocket.sendDataRight(datosPelota);
+                    loBall.RemoveBall();
+                    loBall.Dispose();
                 }
 
             }
@@ -169,6 +175,12 @@ namespace TestSocketBall
         private void FrmMain_MouseMove(object sender, MouseEventArgs e)
         {
             loPaddle.PosPala(MousePosition);
+        }
+
+        public static int ConvertRange(int originalStart, int originalEnd, int newStart, int newEnd, int value)
+        {
+            double scale = (double)(newEnd - newStart) / (originalEnd - originalStart);
+            return (int)(newStart + ((value - originalStart) * scale));
         }
     }
 }
