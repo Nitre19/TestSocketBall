@@ -160,6 +160,7 @@ namespace TestSocketBall
                 if (loBall.PosX < this.Width / 2)
                 {
                     loBall.RemoveBall();
+                    loBall.Dispose();
                     ball.positionX = this.Width - (ball.diameter + 5);
                     datosPelota = JsonConvert.SerializeObject(ball);
                     loSocket.sendDataLeft(datosPelota);
@@ -167,6 +168,7 @@ namespace TestSocketBall
                 else
                 {
                     loBall.RemoveBall();
+                    loBall.Dispose();
                     ball.positionX = 4;
                     datosPelota = JsonConvert.SerializeObject(ball);
                     loSocket.sendDataRight(datosPelota);
