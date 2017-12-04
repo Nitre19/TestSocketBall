@@ -19,7 +19,7 @@ namespace TestSocketBall
     public partial class FrmMain : Form
     {
         //Name owner
-        public String ownerName = "Ruben";
+        public String ownerName = "Jordi";
 
         //Mi ip
         public String ipLocal = "";
@@ -27,6 +27,7 @@ namespace TestSocketBall
         //Vecinos
         public String ipLeft =  "192.168.3.30";
         public String ipRight = "192.168.3.26";
+
 
         //Guarda el JSon de la pelota
         public String datosPelota = "";
@@ -103,6 +104,7 @@ namespace TestSocketBall
             Ball pelota = JsonConvert.DeserializeObject<Ball>(datosPelota);
             BeginInvoke((Action)delegate
             {
+
                 pelota.positionY = ConvertRange(0, pelota.resolutionY, 0, Screen.PrimaryScreen.Bounds.Height, pelota.positionY);
                 //pelota.positionY = 0 + (pelota.positionX - 0) * (Screen.PrimaryScreen.Bounds.Height - 0) / (pelota.resolutionX - 0);
 
