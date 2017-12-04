@@ -103,6 +103,8 @@ namespace TestSocketBall
             Ball pelota = JsonConvert.DeserializeObject<Ball>(datosPelota);
             BeginInvoke((Action)delegate
             {
+                pelota.positionY = 0 + (pelota.positionX - 0) * (Screen.PrimaryScreen.Bounds.Height - 0) / (pelota.resolutionX - 0);
+
                 ClBall pelotaui = new ClBall(Color.FromArgb(pelota.color), pelota.creator, pelota.movementX,
                 pelota.movementY, pelota.diameter, this, 0, loPaddle, 500, pelota.positionY,
                 pelota.resolutionX, pelota.resolutionY, pelota.life);
