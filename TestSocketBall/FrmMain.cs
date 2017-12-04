@@ -19,15 +19,15 @@ namespace TestSocketBall
     public partial class FrmMain : Form
     {
         //Name owner
-        public String ownerName = "Jordi";
+        public String ownerName = "Xavi";
 
         //Mi ip
         public String ipLocal = "";
 
         //Vecinos
-        public String ipLeft =  "192.168.3.30";
+        public String ipLeft =  "192.168.3.25";
 
-        public String ipRight = "192.168.3.41";
+        public String ipRight = "192.168.3.30";
 
 
         //Guarda el JSon de la pelota
@@ -131,7 +131,7 @@ namespace TestSocketBall
             if (e.Control && e.KeyCode == Keys.N)
             {
                 //Poner la pelota de la Marta
-                loBall = new ClBall(Color.FromArgb(255, random.Next(0, 256), random.Next(0, 256), random.Next(0, 256)), ownerName, 10, 10, 30, this, 30, loPaddle, 70, 70, Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, 1);
+                loBall = new ClBall(Color.FromArgb(255, random.Next(0, 256), random.Next(0, 256), random.Next(0, 256)), ownerName + DateTime.Now, 10, 10, 30, this, 30, loPaddle, 70, 70, Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, 1);
                 loBall.wallhit += LoBall_wallhit;
             }
         }
