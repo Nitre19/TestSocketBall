@@ -25,7 +25,7 @@ namespace TestSocketBall
         public String ipLocal = "";
 
         //Vecinos
-        public String ipLeft =  "192.168.3.24";
+        public String ipLeft =  "192.168.3.30";
         public String ipRight = "192.168.3.41";
 
         //Guarda el JSon de la pelota
@@ -103,14 +103,22 @@ namespace TestSocketBall
             Ball pelota = JsonConvert.DeserializeObject<Ball>(datosPelota);
             BeginInvoke((Action)delegate
             {
-                pelota.positionY = 0 + (pelota.positionX - 0) * (Screen.PrimaryScreen.Bounds.Height - 0) / (pelota.resolutionX - 0);
+                pelota.positionY = ConvertRange(0, pelota.resolutionY, 0, Screen.PrimaryScreen.Bounds.Height, pelota.positionY);
+                //pelota.positionY = 0 + (pelota.positionX - 0) * (Screen.PrimaryScreen.Bounds.Height - 0) / (pelota.resolutionX - 0);
 
-                ClBall pelotaui = new ClBall(Color.FromArgb(pelota.color), pelota.creator, pelota.movementX,
+                ClBall pelotaui = new ClBall(Color.FromArgb(pelota.color), pelota.creator, pelota.movementX * (-1),
                 pelota.movementY, pelota.diameter, this, 30, loPaddle, pelota.positionX, pelota.positionY,
-                pelota.resolutionX, pelota.resolutionY, pelota.life);
+                Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, pelota.life);
                 pelotaui.wallhit += LoBall_wallhit;
             });
             
+        }
+
+        //Dr.Gordillo[9:58 AM]
+        public static int ConvertRange(int originalStart, int originalEnd, int newStart, int newEnd, int value)
+        {
+            double scale = (double)(newEnd - newStart) / (originalEnd - originalStart);
+            return (int)(newStart + ((value - originalStart) * scale));
         }
 
         private void FrmMain_KeyUp(object sender, KeyEventArgs e)
@@ -120,7 +128,7 @@ namespace TestSocketBall
             if (e.Control && e.KeyCode == Keys.N)
             {
                 //Poner la pelota de la Marta
-                loBall = new ClBall(Color.FromArgb(255, random.Next(0, 256), random.Next(0, 256), random.Next(0, 256)), ownerName, 10, 10, 30, this, 30, loPaddle, 70, 70, 50, 50, 1);
+                loBall = new ClBall(Color.FromArgb(255, random.Next(0, 256), random.Next(0, 256), random.Next(0, 256)), ownerName, 10, 10, 30, this, 30, loPaddle, 70, 70, Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, 1);
                 loBall.wallhit += LoBall_wallhit;
             }
         }
@@ -128,6 +136,7 @@ namespace TestSocketBall
         private void LoBall_wallhit(object sender, EventArgs e)
         {
             ClBall loBall = (ClBall) sender;
+            loBall.PararPelota();
             Ball ball;
 
             //Miramos si hay paredes en la partida
@@ -139,8 +148,8 @@ namespace TestSocketBall
                     diameter = loBall.Diametre,
                     creator = loBall.Owner,
                     life = loBall.Life,
-                    movementX = loBall.MovX,
-                    movementY = loBall.MovY,
+                    movementX = loBall.DirectionX,
+                    movementY = loBall.DirectionY,
                     positionX = loBall.PosX,
                     positionY = loBall.PosY,
                     resolutionY = loBall.ResY,
@@ -150,12 +159,14 @@ namespace TestSocketBall
                 //Segun la posicion X de la pelota sabemos si es left o right
                 if (loBall.PosX < this.Width / 2)
                 {
-                    ball.positionX = this.Width - (ball.diameter / 2);
+                    loBall.RemoveBall();
+                    ball.positionX = this.Width - (ball.diameter + 5);
                     datosPelota = JsonConvert.SerializeObject(ball);
                     loSocket.sendDataLeft(datosPelota);
                 }
                 else
                 {
+                    loBall.RemoveBall();
                     ball.positionX = 4;
                     datosPelota = JsonConvert.SerializeObject(ball);
                     loSocket.sendDataRight(datosPelota);
