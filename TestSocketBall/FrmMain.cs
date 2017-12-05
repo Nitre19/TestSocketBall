@@ -172,6 +172,7 @@ namespace TestSocketBall
                     //Segun la posicion X de la pelota sabemos si es left o right
                     if (loBall.PosX < this.Width / 2)
                     {
+                        loSocket.connectSocketLeft(ipLeft);
                         loBall.RemoveBall();
                         loBall.Dispose();
                         ball.positionX = this.Width - (ball.diameter + 5);
@@ -180,6 +181,7 @@ namespace TestSocketBall
                     }
                     else
                     {
+                        loSocket.connectSocketRight(ipRight);
                         loBall.RemoveBall();
                         loBall.Dispose();
                         ball.positionX = 4;
