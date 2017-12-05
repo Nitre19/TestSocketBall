@@ -25,7 +25,7 @@ namespace TestSocketBall
         public String ipLocal = "";
 
         //Vecinos
-        public String ipRight = "192.168.3.41";
+        public String ipRight = "192.168.3.36";
         public String ipLeft =  "192.168.3.30";
 
 
@@ -56,6 +56,8 @@ namespace TestSocketBall
 
         private void FrmMain_Load(object sender, EventArgs e)
         {
+            Cursor.Hide();
+
             loPaddle = new ClPaddle(this,Color.DarkBlue,100,15);
 
             ipLocal = GetLocalIPAddress().ToString();
