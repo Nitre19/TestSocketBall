@@ -19,14 +19,14 @@ namespace TestSocketBall
     public partial class FrmMain : Form
     {
         //Name owner
-        public String ownerName = "Jordi";
+        public String ownerName = "Akrakor";
 
         //Mi ip
         public String ipLocal = "";
 
         //Vecinos
-        public String ipLeft =  "192.168.3.30";
-        public String ipRight = "192.168.3.25";
+        public String ipLeft =  "192.168.3.41";
+        public String ipRight = "192.168.3.24";
 
 
         //Guarda el JSon de la pelota
