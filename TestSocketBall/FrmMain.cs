@@ -60,14 +60,14 @@ namespace TestSocketBall
 
 
             ///////////////////////////////////////////
-            //Abrir clSocket y conectar listener
-            loSocket = new ClSockets();
-            loSocket.connectSocketListener(ipLocal);
-            //Conectamos con los clientes
-            loSocket.connectSocketLeft(ipLeft);
-            loSocket.connectSocketRight(ipRight);            
-            //Configuramos las funciones que escucharan los listeners
-            loSocket.msgReceived += LoSocket_msgReceived;
+            ////Abrir clSocket y conectar listener
+            //loSocket = new ClSockets();
+            //loSocket.connectSocketListener(ipLocal);
+            ////Conectamos con los clientes
+            //loSocket.connectSocketLeft(ipLeft);
+            //loSocket.connectSocketRight(ipRight);            
+            ////Configuramos las funciones que escucharan los listeners
+            //loSocket.msgReceived += LoSocket_msgReceived;
             ///////////////////////////////////////////
         }
 
@@ -118,12 +118,7 @@ namespace TestSocketBall
                     pelotaui.wallhit += LoBall_wallhit;
                 });
             }
-            catch (Exception excp)
-            {
-
-            }
-
-            
+            catch {}
         }
 
         //Dr.Gordillo[9:58 AM]
@@ -137,11 +132,18 @@ namespace TestSocketBall
         {
             //Al clicar en la tecla "Ctrl+n" generamos una pelota
 
-            if (e.Control && e.KeyCode == Keys.N)
+            if (e.KeyCode == Keys.Space)
             {
                 //Poner la pelota de la Marta
                 loBall = new ClBall(Color.FromArgb(255, random.Next(0, 256), random.Next(0, 256), random.Next(0, 256)), ownerName, 10, 10, 30, this, 30, loPaddle, 70, 70, Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, 1);
                 loBall.wallhit += LoBall_wallhit;
+            }
+
+            if (e.KeyCode == Keys.Escape)
+            {
+                // CERRAR SOCKETS
+
+                Close();
             }
         }
 
