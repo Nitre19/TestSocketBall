@@ -19,14 +19,15 @@ namespace TestSocketBall
     public partial class FrmMain : Form
     {
         //Name owner
-        public String ownerName = "Ruben";
+        public String ownerName = "Jordi";
 
         //Mi ip
         public String ipLocal = "";
 
         //Vecinos
         public String ipLeft =  "192.168.3.30";
-        public String ipRight = "192.168.3.26";
+        public String ipRight = "192.168.3.25";
+
 
         //Guarda el JSon de la pelota
         public String datosPelota = "";
@@ -96,21 +97,30 @@ namespace TestSocketBall
 
         private void LoSocket_msgReceived(object sender, EventArgs e)
         {
-            //Obtenems la pelota del vecino
-            ClSockets temp = (ClSockets) sender;
-            datosPelota = temp.data;
-
-            Ball pelota = JsonConvert.DeserializeObject<Ball>(datosPelota);
-            BeginInvoke((Action)delegate
+            try
             {
-                pelota.positionY = ConvertRange(0, pelota.resolutionY, 0, Screen.PrimaryScreen.Bounds.Height, pelota.positionY);
-                //pelota.positionY = 0 + (pelota.positionX - 0) * (Screen.PrimaryScreen.Bounds.Height - 0) / (pelota.resolutionX - 0);
+                //Obtenems la pelota del vecino
+                ClSockets temp = (ClSockets)sender;
+                datosPelota = temp.data;
 
-                ClBall pelotaui = new ClBall(Color.FromArgb(pelota.color), pelota.creator, pelota.movementX * (-1),
-                pelota.movementY, pelota.diameter, this, 30, loPaddle, pelota.positionX, pelota.positionY,
-                Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, pelota.life);
-                pelotaui.wallhit += LoBall_wallhit;
-            });
+                Ball pelota = JsonConvert.DeserializeObject<Ball>(datosPelota);
+                BeginInvoke((Action)delegate
+                {
+
+                    pelota.positionY = ConvertRange(0, pelota.resolutionY, 0, Screen.PrimaryScreen.Bounds.Height, pelota.positionY);
+                    //pelota.positionY = 0 + (pelota.positionX - 0) * (Screen.PrimaryScreen.Bounds.Height - 0) / (pelota.resolutionX - 0);
+
+                    ClBall pelotaui = new ClBall(Color.FromArgb(pelota.color), pelota.creator, pelota.movementX * (-1),
+                    pelota.movementY, pelota.diameter, this, 30, loPaddle, pelota.positionX, pelota.positionY,
+                    Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, pelota.life);
+                    pelotaui.wallhit += LoBall_wallhit;
+                });
+            }
+            catch (Exception excp)
+            {
+
+            }
+
             
         }
 
@@ -162,6 +172,7 @@ namespace TestSocketBall
                     //Segun la posicion X de la pelota sabemos si es left o right
                     if (loBall.PosX < this.Width / 2)
                     {
+                        loSocket.connectSocketLeft(ipLeft);
                         loBall.RemoveBall();
                         loBall.Dispose();
                         ball.positionX = this.Width - (ball.diameter + 5);
@@ -170,6 +181,7 @@ namespace TestSocketBall
                     }
                     else
                     {
+                        loSocket.connectSocketRight(ipRight);
                         loBall.RemoveBall();
                         loBall.Dispose();
                         ball.positionX = 4;
