@@ -25,7 +25,7 @@ namespace TestSocketBall
         public String ipLocal = "";
 
         //Vecinos
-        public String ipRight = "192.168.3.36";
+        public String ipRight = "192.168.3.41";
         public String ipLeft =  "192.168.3.30";
 
 
@@ -107,7 +107,6 @@ namespace TestSocketBall
                 BeginInvoke((Action)delegate
                 {
                     pelota.positionX = ConvertRange(0, pelota.resolutionX, 0, Screen.PrimaryScreen.Bounds.Width, pelota.positionX);
-                    if (pelota.movementX < 0) pelota.positionX -= 5;
                     pelota.positionY = ConvertRange(0, pelota.resolutionY, 0, Screen.PrimaryScreen.Bounds.Height, pelota.positionY);
 
                     ClBall pelotaui = new ClBall(Color.FromArgb(pelota.color), pelota.creator, pelota.movementX * (-1),
