@@ -19,14 +19,14 @@ namespace TestSocketBall
     public partial class FrmMain : Form
     {
         //Name owner
-        public String ownerName = "Akrakor";
+        public String ownerName = "Ruben";
 
         //Mi ip
         public String ipLocal = "";
 
         //Vecinos
+        public String ipRight = "192.168.3.25";
         public String ipLeft =  "192.168.3.41";
-        public String ipRight = "192.168.3.24";
 
 
         //Guarda el JSon de la pelota
@@ -172,7 +172,7 @@ namespace TestSocketBall
                     //Segun la posicion X de la pelota sabemos si es left o right
                     if (loBall.PosX < this.Width / 2)
                     {
-                        loSocket.connectSocketLeft(ipLeft);
+                        //loSocket.connectSocketLeft(ipLeft);
                         loBall.RemoveBall();
                         loBall.Dispose();
                         ball.positionX = this.Width - (ball.diameter + 5);
@@ -181,7 +181,7 @@ namespace TestSocketBall
                     }
                     else
                     {
-                        loSocket.connectSocketRight(ipRight);
+                        //loSocket.connectSocketRight(ipRight);
                         loBall.RemoveBall();
                         loBall.Dispose();
                         ball.positionX = 4;
