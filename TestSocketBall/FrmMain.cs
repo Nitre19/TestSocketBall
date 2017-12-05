@@ -108,8 +108,10 @@ namespace TestSocketBall
                 {
                     pelota.positionX = ConvertRange(0, pelota.resolutionX, 0, Screen.PrimaryScreen.Bounds.Width, pelota.positionX);
                     pelota.positionY = ConvertRange(0, pelota.resolutionY, 0, Screen.PrimaryScreen.Bounds.Height, pelota.positionY);
+                    pelota.movementX = -pelota.movementX;
+                    if(pelota.movementX < 0) pelota.positionX = pelota.positionX - pelota.diameter;
 
-                    ClBall pelotaui = new ClBall(Color.FromArgb(pelota.color), pelota.creator, pelota.movementX * (-1),
+                    ClBall pelotaui = new ClBall(Color.FromArgb(pelota.color), pelota.creator, pelota.movementX,
                     pelota.movementY, pelota.diameter, this, 30, loPaddle, pelota.positionX, pelota.positionY,
                     Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, pelota.life);
                     pelotaui.wallhit += LoBall_wallhit;
