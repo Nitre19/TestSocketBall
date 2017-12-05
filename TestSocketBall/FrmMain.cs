@@ -19,7 +19,7 @@ namespace TestSocketBall
     public partial class FrmMain : Form
     {
         //Name owner
-        public String ownerName = "Ruben";
+        public String ownerName = "Jordi";
 
         //Mi ip
         public String ipLocal = "";
@@ -107,6 +107,7 @@ namespace TestSocketBall
                 BeginInvoke((Action)delegate
                 {
                     pelota.positionX = ConvertRange(0, pelota.resolutionX, 0, Screen.PrimaryScreen.Bounds.Width, pelota.positionX);
+                    if (pelota.movementX < 0) pelota.positionX -= 5;
                     pelota.positionY = ConvertRange(0, pelota.resolutionY, 0, Screen.PrimaryScreen.Bounds.Height, pelota.positionY);
 
                     ClBall pelotaui = new ClBall(Color.FromArgb(pelota.color), pelota.creator, pelota.movementX * (-1),
