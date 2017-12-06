@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using GameHelpers.Helpers;
 using Newtonsoft.Json;
@@ -25,7 +20,7 @@ namespace TestSocketBall
         public String ipLocal = "";
 
         //Vecinos
-        public String ipRight = "192.168.3.36";
+        public String ipRight = "192.168.3.30";
         public String ipLeft =  "192.168.3.30";
 
 
@@ -49,27 +44,31 @@ namespace TestSocketBall
 
         
 
-        public FrmMain()
+        public FrmMain(ClSockets sockets)
         {
             InitializeComponent();
+            loSocket = sockets;
         }
 
         private void FrmMain_Load(object sender, EventArgs e)
         {
+            Cursor.Hide();
+
             loPaddle = new ClPaddle(this,Color.DarkBlue,100,15);
 
             ipLocal = GetLocalIPAddress().ToString();
 
-            //Abrir clSocket y conectar listener
-            loSocket = new ClSockets();
-            loSocket.connectSocketListener(ipLocal);
 
-            //Conectamos con los clientes
-            loSocket.connectSocketLeft(ipLeft);
-            loSocket.connectSocketRight(ipRight);            
-
-            //Configuramos las funciones que escucharan los listeners
-            loSocket.msgReceived += LoSocket_msgReceived;
+            ///////////////////////////////////////////
+            ////Abrir clSocket y conectar listener
+            //loSocket = new ClSockets();
+            //loSocket.connectSocketListener(ipLocal);
+            ////Conectamos con los clientes
+            //loSocket.connectSocketLeft(ipLeft);
+            //loSocket.connectSocketRight(ipRight);            
+            ////Configuramos las funciones que escucharan los listeners
+            //loSocket.msgReceived += LoSocket_msgReceived;
+            ///////////////////////////////////////////
         }
 
         public static IPAddress GetLocalIPAddress()
@@ -107,21 +106,19 @@ namespace TestSocketBall
                 BeginInvoke((Action)delegate
                 {
                     pelota.positionX = ConvertRange(0, pelota.resolutionX, 0, Screen.PrimaryScreen.Bounds.Width, pelota.positionX);
-                    if (pelota.movementX < 0) pelota.positionX -= 5;
                     pelota.positionY = ConvertRange(0, pelota.resolutionY, 0, Screen.PrimaryScreen.Bounds.Height, pelota.positionY);
+                    pelota.movementX = -pelota.movementX;
+                    if(pelota.movementX < 0) pelota.positionX = pelota.positionX - pelota.diameter;
 
-                    ClBall pelotaui = new ClBall(Color.FromArgb(pelota.color), pelota.creator, pelota.movementX * (-1),
+                    pelota.diameter = ConvertRange(0, pelota.resolutionX, 0, Screen.PrimaryScreen.Bounds.Width, pelota.diameter);
+
+                    ClBall pelotaui = new ClBall(Color.FromArgb(pelota.color), pelota.creator, pelota.movementX,
                     pelota.movementY, pelota.diameter, this, 30, loPaddle, pelota.positionX, pelota.positionY,
                     Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, pelota.life);
                     pelotaui.wallhit += LoBall_wallhit;
                 });
             }
-            catch (Exception excp)
-            {
-
-            }
-
-            
+            catch {}
         }
 
         //Dr.Gordillo[9:58 AM]
@@ -135,11 +132,18 @@ namespace TestSocketBall
         {
             //Al clicar en la tecla "Ctrl+n" generamos una pelota
 
-            if (e.Control && e.KeyCode == Keys.N)
+            if (e.KeyCode == Keys.Space)
             {
                 //Poner la pelota de la Marta
                 loBall = new ClBall(Color.FromArgb(255, random.Next(0, 256), random.Next(0, 256), random.Next(0, 256)), ownerName, 10, 10, 30, this, 30, loPaddle, 70, 70, Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, 1);
                 loBall.wallhit += LoBall_wallhit;
+            }
+
+            if (e.KeyCode == Keys.Escape)
+            {
+                // CERRAR SOCKETS
+
+                Close();
             }
         }
 
