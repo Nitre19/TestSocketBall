@@ -14,14 +14,14 @@ namespace TestSocketBall
     public partial class FrmMain : Form
     {
         //Name owner
-        public String ownerName = "Jordi";
+        public String ownerName = "Xavi";
 
         //Mi ip
         public String ipLocal = "";
 
         //Vecinos
         public String ipRight = "192.168.3.30";
-        public String ipLeft =  "192.168.3.30";
+        public String ipLeft =  "192.168.3.25";
 
 
         //Guarda el JSon de la pelota
@@ -44,10 +44,10 @@ namespace TestSocketBall
 
         
 
-        public FrmMain(ClSockets sockets)
+        public FrmMain()
         {
             InitializeComponent();
-            loSocket = sockets;
+            //loSocket = sockets;
         }
 
         private void FrmMain_Load(object sender, EventArgs e)
@@ -61,13 +61,12 @@ namespace TestSocketBall
 
             ///////////////////////////////////////////
             ////Abrir clSocket y conectar listener
-            //loSocket = new ClSockets();
-            //loSocket.connectSocketListener(ipLocal);
-            ////Conectamos con los clientes
-            //loSocket.connectSocketLeft(ipLeft);
-            //loSocket.connectSocketRight(ipRight);            
-            ////Configuramos las funciones que escucharan los listeners
-            //loSocket.msgReceived += LoSocket_msgReceived;
+            loSocket = new ClSockets(ipLocal);
+            //Conectamos con los clientes
+            loSocket.connectSocketLeft(ipLeft);
+            loSocket.connectSocketRight(ipRight);
+            //Configuramos las funciones que escucharan los listeners
+            loSocket.msgReceived += LoSocket_msgReceived;
             ///////////////////////////////////////////
         }
 
@@ -135,14 +134,14 @@ namespace TestSocketBall
             if (e.KeyCode == Keys.Space)
             {
                 //Poner la pelota de la Marta
-                loBall = new ClBall(Color.FromArgb(255, random.Next(0, 256), random.Next(0, 256), random.Next(0, 256)), ownerName, 10, 10, 30, this, 30, loPaddle, 70, 70, Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, 1);
+                loBall = new ClBall(Color.FromArgb(255, random.Next(0, 256), random.Next(0, 256), random.Next(0, 256)), ownerName, 10, 10, 50, this, 30, loPaddle, 70, 70, Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, 1);
                 loBall.wallhit += LoBall_wallhit;
             }
 
             if (e.KeyCode == Keys.Escape)
             {
                 // CERRAR SOCKETS
-
+                loSocket.fullDisconnect();
                 Close();
             }
         }
@@ -175,7 +174,7 @@ namespace TestSocketBall
 
                     //Segun la posicion X de la pelota sabemos si es left o right
                     if (loBall.PosX < this.Width / 2)
-                    {
+                    {                        
                         //loSocket.connectSocketLeft(ipLeft);
                         loBall.RemoveBall();
                         loBall.Dispose();
