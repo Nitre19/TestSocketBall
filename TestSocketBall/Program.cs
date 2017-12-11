@@ -16,7 +16,7 @@ namespace TestSocketBall
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmMain(null));
+            Application.Run(new FrmMain());
         }
     }
 }

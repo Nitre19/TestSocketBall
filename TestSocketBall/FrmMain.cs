@@ -8,21 +8,20 @@ using System.Windows.Forms;
 using GameHelpers.Helpers;
 using Newtonsoft.Json;
 using SocketHelpers;
-using System.Collections.Generic;
 
 namespace TestSocketBall
 {
     public partial class FrmMain : Form
     {
         //Name owner
-        public String ownerName = "Jordi";
+        public String ownerName = "Xavi";
 
         //Mi ip
         public String ipLocal = "";
 
         //Vecinos
         public String ipRight = "192.168.3.30";
-        public String ipLeft =  "192.168.3.30";
+        public String ipLeft = "192.168.3.25";
 
 
         //Guarda el JSon de la pelota
@@ -43,34 +42,31 @@ namespace TestSocketBall
         //Random
         public Random random = new Random();
 
-        private List<ClBall> ballList = null;
 
-        public FrmMain(ClSockets sockets)
+
+        public FrmMain()
         {
             InitializeComponent();
-            loSocket = sockets;
+            //loSocket = sockets;
         }
 
         private void FrmMain_Load(object sender, EventArgs e)
         {
             Cursor.Hide();
 
-            ballList = new List<ClBall>();
-
-            loPaddle = new ClPaddle(this,Color.DarkBlue,100,15);
+            loPaddle = new ClPaddle(this, Color.DarkBlue, 100, 15);
 
             ipLocal = GetLocalIPAddress().ToString();
 
 
             ///////////////////////////////////////////
             ////Abrir clSocket y conectar listener
-            //loSocket = new ClSockets();
-            //loSocket.connectSocketListener(ipLocal);
-            ////Conectamos con los clientes
-            //loSocket.connectSocketLeft(ipLeft);
-            //loSocket.connectSocketRight(ipRight);            
-            ////Configuramos las funciones que escucharan los listeners
-            //loSocket.msgReceived += LoSocket_msgReceived;
+            loSocket = new ClSockets(ipLocal);
+            //Conectamos con los clientes
+            loSocket.connectSocketLeft(ipLeft);
+            loSocket.connectSocketRight(ipRight);
+            //Configuramos las funciones que escucharan los listeners
+            loSocket.msgReceived += LoSocket_msgReceived;
             ///////////////////////////////////////////
         }
 
@@ -111,7 +107,7 @@ namespace TestSocketBall
                     pelota.positionX = ConvertRange(0, pelota.resolutionX, 0, Screen.PrimaryScreen.Bounds.Width, pelota.positionX);
                     pelota.positionY = ConvertRange(0, pelota.resolutionY, 0, Screen.PrimaryScreen.Bounds.Height, pelota.positionY);
                     pelota.movementX = -pelota.movementX;
-                    if(pelota.movementX < 0) pelota.positionX = pelota.positionX - pelota.diameter;
+                    if (pelota.movementX < 0) pelota.positionX = pelota.positionX - pelota.diameter;
 
                     pelota.diameter = ConvertRange(0, pelota.resolutionX, 0, Screen.PrimaryScreen.Bounds.Width, pelota.diameter);
 
@@ -121,7 +117,7 @@ namespace TestSocketBall
                     pelotaui.wallhit += LoBall_wallhit;
                 });
             }
-            catch {}
+            catch { }
         }
 
         //Dr.Gordillo[9:58 AM]
@@ -138,21 +134,14 @@ namespace TestSocketBall
             if (e.KeyCode == Keys.Space)
             {
                 //Poner la pelota de la Marta
-                loBall = new ClBall(Color.FromArgb(255, random.Next(0, 256), random.Next(0, 256), random.Next(0, 256)), ownerName, 10, 10, 30, this, 30, loPaddle, 70, 70, Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, 1);
+                loBall = new ClBall(Color.FromArgb(255, random.Next(0, 256), random.Next(0, 256), random.Next(0, 256)), ownerName, 10, 10, 50, this, 30, loPaddle, 70, 70, Screen.PrimaryScreen.Bounds.Width, Screen.PrimaryScreen.Bounds.Height, 1);
                 loBall.wallhit += LoBall_wallhit;
-
-                ballList.Add(loBall);
             }
 
             if (e.KeyCode == Keys.Escape)
             {
                 // CERRAR SOCKETS
-                foreach (ClBall ball in ballList)
-                {
-                    ball.PararPelota();
-                    ball.RemoveBall();
-                }
-
+                loSocket.fullDisconnect();
                 Close();
             }
         }
